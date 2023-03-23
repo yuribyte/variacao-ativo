@@ -1,0 +1,26 @@
+<ng-template
+  #subscriptions
+  [ngTemplateOutlet]="subscriptions"
+  [ngTemplateOutletContext]="{
+    rawFinanceData: rawFinanceData$ | async
+  }"
+  let-rawFinanceData="rawFinanceData"
+>
+  <div class="dashboard-container">
+    <div class="area-header">
+      <mat-toolbar class="d-flex justify-content-between" color="primary">
+        <h1>{{ rawFinanceData?.meta?.symbol }}</h1>
+        <h1>Variação do Ativo</h1>
+      </mat-toolbar>
+    </div>
+
+    <div class="area-chart">
+      <svt-finance-chart [data]="rawFinanceData | mapStock"></svt-finance-chart>
+    </div>
+
+    <div class="area-grid">
+      <svt-finance-grid [data]="rawFinanceData | mapVariation">
+      </svt-finance-grid>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,22 @@
+.dashboard-container {
+  display: grid;
+  grid-template-columns: auto;
+  gap: 0.5rem;
+  grid-template-rows: min-content min-content 1fr;
+  grid-template-areas:
+    'header'
+    'chart'
+    'grid';
+
+  .area-header {
+    grid-area: header;
+  }
+
+  .area-grid {
+    grid-area: grid;
+  }
+
+  .area-chart {
+    grid-area: chart;
+  }
+}
