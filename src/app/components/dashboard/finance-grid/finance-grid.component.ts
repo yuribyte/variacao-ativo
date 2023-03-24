@@ -23,7 +23,7 @@ export class FinanceGridComponent implements AfterViewInit {
   @Input()
   data!: Array<IFinance>;
 
-  noRowsTemplateMessage = `Ops, não foi encontrado dados!`;
+  noRowsTemplateMessage = `<p class="fs-5">Ops, não foram encontrados dados!</p>`;
   gridOptions = FinanceGridOptions.setupGridOptions();
 
   ngAfterViewInit(): void {

@@ -7,47 +7,40 @@ import { FinanceModelData as Model } from 'src/app/core/model/finance.model';
   name: 'mapVariation'
 })
 export class VariationPipe implements PipeTransform {
-  transform(value: Model.RawIResult): Array<Model.IFinance> {
-    const rowData: Array<Model.IFinance> = [];
-    const hasData = !isEmpty(value) && !isNil(value);
+  transform(data: Model.RawIResult): Model.IFinance[] {
+    const rowData: Model.IFinance[] = [];
+    const hasData = !isEmpty(data) && !isNil(data);
 
-    if (hasData) {
-      const amount = 30;
-
-      const timestampAmount = value?.timestamp?.slice(0, amount) || [];
-      const [quote] = value?.indicators?.quote || [];
-      const quoteAmount = quote?.close?.slice(0, amount);
-
-      quoteAmount?.map((price, index) => {
-        const date = DateTime.fromSeconds(timestampAmount[index]).toJSDate();
-
-        const fromDayOne = quoteAmount[index - 1];
-        const fromIndexZero = quoteAmount[0];
-        const variationDayOne = this._calculateVariationStock(
-          price,
-          fromDayOne
-        );
-        const variationIndexZero = this._calculateVariationStock(
-          price,
-          fromIndexZero
-        );
-
-        rowData.push({
-          day: index + 1,
-          date,
-          price,
-          variationDayOne,
-          variationIndexZero
-        } as Model.IFinance);
-      });
-
+    if (!hasData) {
       return rowData;
     }
+
+    const consultRange = 30;
+
+    const timestamps = data?.timestamp?.slice(-consultRange) || [];
+    const [quote] = data?.indicators?.quote || [];
+    const stockPrices = quote?.close?.slice(-consultRange);
+
+    stockPrices?.forEach((price, index) => {
+      const date = DateTime.fromSeconds(timestamps[index]).toJSDate();
+      const previousDayPrice = stockPrices[index - 1];
+      const initialPrice = stockPrices[0];
+      const variationDayOne = this._calculateVariation(price, previousDayPrice);
+      const variationIndexZero = this._calculateVariation(price, initialPrice);
+
+      rowData.push({
+        day: index + 1,
+        date,
+        price,
+        variationDayOne,
+        variationIndexZero
+      } as Model.IFinance);
+    });
 
     return rowData;
   }
 
-  private _calculatePercentValues(
+  private _calculateVariation(
     currentPrice: number,
     previousPrice: number
   ): number {
@@ -55,27 +48,8 @@ export class VariationPipe implements PipeTransform {
       return 0;
     }
 
-    return (currentPrice * 100) / previousPrice;
-  }
+    const percentVariation = (currentPrice / previousPrice) * 100;
 
-  private _calculateVariationStock(
-    currentPrice: number,
-    previousPrice: number
-  ): number {
-    const calculatedPercent = this._calculatePercentValues(
-      currentPrice,
-      previousPrice
-    );
-    if (previousPrice === undefined || previousPrice === 0) {
-      return 0;
-    }
-
-    const isPositivePercent = calculatedPercent > 100;
-
-    if (isPositivePercent) {
-      return (calculatedPercent - 100) * +1;
-    }
-
-    return (100 - calculatedPercent) * -1;
+    return percentVariation - 100;
   }
 }

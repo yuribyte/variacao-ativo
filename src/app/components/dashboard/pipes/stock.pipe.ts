@@ -8,54 +8,57 @@ import { StockData } from '../finance-chart/finance-chart.model';
   name: 'mapStock'
 })
 export class StockPipe implements PipeTransform {
-  transform(value: Model.RawIResult): StockData {
+  transform(data: Model.RawIResult): StockData {
     const stockData: StockData = {} as StockData;
-    const hasData = !isEmpty(value) && !isNil(value);
+    const hasData = !isEmpty(data) && !isNil(data);
 
-    if (hasData) {
-      const amount = 30;
-      const timestampAmount = value?.timestamp?.slice(0, amount) || [];
-      const dateISO = timestampAmount.map((timestamp) =>
-        DateTime.fromSeconds(timestamp).toISODate()
+    if (!hasData) {
+      return stockData;
+    }
+
+    const consultRange = 30;
+    const timestamps = data?.timestamp?.slice(-consultRange) || [];
+    const dateISO = timestamps.map((timestamp) =>
+      DateTime.fromSeconds(timestamp).toISODate()
+    );
+
+    const [quote] = data?.indicators?.quote || [];
+    const sortingOrder = ['open', 'close', 'low', 'high', 'volume'];
+
+    if (quote) {
+      const sortedQuotes = Object.fromEntries(
+        Object.entries(quote).sort(
+          ([keyA], [keyB]) =>
+            sortingOrder.indexOf(keyA) - sortingOrder.indexOf(keyB)
+        )
       );
 
-      const [quote] = value?.indicators?.quote || [];
-      const sortingOrder = ['open', 'close', 'low', 'high', 'volume'];
+      const stockValues: number[][] = [];
+      const consultRangeIndex = sortedQuotes['open'].length - consultRange;
 
-      if (quote) {
-        const sortedQuotes = Object.fromEntries(
-          Object.entries(quote).sort(
-            ([value], [next]) =>
-              sortingOrder.indexOf(value) - sortingOrder.indexOf(next)
-          )
-        );
+      for (let i = consultRangeIndex; i < sortedQuotes['open'].length; i++) {
+        const data: number[] = [];
 
-        const stockValues: number[][] = [];
+        for (const key in sortedQuotes) {
+          if (sortedQuotes.hasOwnProperty(key)) {
+            const quoteValue = sortedQuotes[key][i];
 
-        for (let i = 0; i < sortedQuotes['open'].length; i++) {
-          let data: number[] | null = null;
+            data.push(Number(quoteValue?.toFixed(2)));
 
-          for (const key in sortedQuotes) {
-            if (sortedQuotes.hasOwnProperty(key)) {
-              if (!data) {
-                data = [];
-              }
-              data.push(Number(Number(sortedQuotes[key][i]).toFixed(2)));
+            if (key === 'open' && quoteValue === 0 && i >= 2) {
+              data.splice(-1);
             }
-          }
-          if (data) {
-            stockValues.push(data.slice(0, amount));
           }
         }
 
-        Object.assign(stockData, {
-          stockValues,
-          dateISO,
-          symbol: value?.meta?.symbol
-        });
+        stockValues.push(data);
       }
 
-      return stockData;
+      Object.assign(stockData, {
+        stockValues,
+        dateISO,
+        symbol: data?.meta?.symbol
+      });
     }
 
     return stockData;

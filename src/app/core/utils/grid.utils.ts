@@ -46,15 +46,15 @@ export class GridUtils {
   }
 
   static priceFormatter(params: ValueFormatterParams): string {
-    const price = Number(params?.value);
+    const price = params?.value;
 
-    return `R$ ${price.toFixed(2).replace('.', ',')}`;
+    return `R$ ${price?.toFixed(2)?.replace('.', ',')}`;
   }
 
   static variationFormatter(params: ValueFormatterParams): string {
-    const value = Number(params?.value);
-    const rowIndex = params.node?.rowIndex;
-    const percent = `${value.toFixed(2).replace('.', ',')}%`;
+    const value = params?.value;
+    const rowIndex = params?.node?.rowIndex;
+    const percent = `${value?.toFixed(2)?.replace('.', ',')}%`;
     const isFirstRowValue = rowIndex === 0 && value === 0;
 
     if (isFirstRowValue) {

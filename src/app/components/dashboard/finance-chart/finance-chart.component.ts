@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { EChartsOption } from 'echarts';
 import { isEmpty } from 'lodash-es';
+import { DateTime } from 'luxon';
 import { StockData } from './finance-chart.model';
 
 @Component({
@@ -42,16 +43,78 @@ export class FinanceChartComponent implements OnChanges {
           label: {
             backgroundColor: '#6a7985'
           }
+        },
+
+        formatter: function (param: any) {
+          param = param[0];
+          const values = param.data;
+
+          const customMarker = `
+            <span
+              style="
+                display:inline-block;
+                margin-left:2px;
+                margin-bottom:2px;
+                border-radius:50%;
+                width:6px;height:6px;
+                background-color:${param.color}"
+          ></span>
+          `;
+
+          const tooltip = [
+            `${param.marker} ${
+              param.seriesName
+            } <span style="color:#ccc">(${DateTime.fromISO(param.name).toFormat(
+              'dd/MM/yyyy'
+            )})</span>`,
+
+            `${customMarker} Abertura: <strong> R$ ${values[1]
+              ?.toFixed(2)
+              ?.replace('.', ',')}</strong>`,
+
+            `${customMarker} Fechamento: <strong> R$ ${values[2]
+              ?.toFixed(2)
+              ?.replace('.', ',')}</strong>`,
+
+            `${customMarker} Alta: <strong> R$ ${values[3]
+              ?.toFixed(2)
+              ?.replace('.', ',')}</strong>`,
+
+            `${customMarker} Baixa: <strong> R$ ${values[4]
+              ?.toFixed(2)
+              ?.replace('.', ',')}</strong>`
+          ];
+
+          return tooltip.join('<br/>');
         }
       },
+
       xAxis: {
         type: 'category',
         data: this.data?.dateISO || [],
         gridIndex: 0,
         boundaryGap: true,
+        splitLine: { show: false },
         axisLine: { onZero: false },
-        splitLine: { show: false }
+        axisPointer: {
+          label: {
+            formatter: function (params) {
+              const date = DateTime.fromISO(params.value.toString()).toFormat(
+                'dd/MM/yyyy'
+              );
+              return date;
+            }
+          }
+        },
+        axisLabel: {
+          formatter: function (value) {
+            const date = DateTime.fromISO(value).toFormat('dd/MM/yyyy');
+
+            return date;
+          }
+        }
       },
+
       yAxis: {
         type: 'value',
         scale: true,
@@ -61,8 +124,20 @@ export class FinanceChartComponent implements OnChanges {
           show: true
         },
         axisLabel: { show: true },
+        axisPointer: {
+          label: {
+            formatter: function (params) {
+              const currency = Number(params.value)
+                .toFixed(2)
+                .replace('.', ',');
+
+              return `R$${currency}`;
+            }
+          }
+        },
         splitLine: { show: true }
       },
+
       series: [
         {
           name: this.data?.symbol,
