@@ -76,11 +76,11 @@ export class FinanceChartComponent implements OnChanges {
               ?.toFixed(2)
               ?.replace('.', ',')}</strong>`,
 
-            `${customMarker} Alta: <strong> R$ ${values[3]
+            `${customMarker} Baixa: <strong> R$ ${values[3]
               ?.toFixed(2)
               ?.replace('.', ',')}</strong>`,
 
-            `${customMarker} Baixa: <strong> R$ ${values[4]
+            `${customMarker} Alta: <strong> R$ ${values[4]
               ?.toFixed(2)
               ?.replace('.', ',')}</strong>`
           ];
