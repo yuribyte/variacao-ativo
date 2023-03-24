@@ -1,5 +1,8 @@
 # Projeto Variação de Ativo
 
+![sample-stock-app](https://user-images.githubusercontent.com/54062837/227601532-96598a19-4557-460e-aae7-73175502bb00.png)
+
+
 ## Apresentação
 
 Este desafio consiste em consultar a variação do preço de um ativo (PETR4.SA) e seus últimos 30 pregões.
