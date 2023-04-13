@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "node proxy.js & npx ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -27,6 +27,7 @@
     "ag-grid-angular": "^29.2.0",
     "ag-grid-community": "^29.2.0",
     "bootstrap": "^5.2.3",
+    "cors-anywhere": "^0.4.4",
     "echarts": "^5.3.3",
     "lodash-es": "^4.17.21",
     "luxon": "^3.3.0",

@@ -27,5 +27,6 @@
     "**/bazel-out/**": true,
     "**/dist/**": true,
     "**/aio/src/generated/**": true
-  }
+  },
+  "cSpell.language": "en,pt-BR"
 }

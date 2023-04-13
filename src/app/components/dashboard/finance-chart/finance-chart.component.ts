@@ -57,8 +57,8 @@ export class FinanceChartComponent implements OnChanges {
                 margin-bottom:2px;
                 border-radius:50%;
                 width:6px;height:6px;
-                background-color:${param.color}"
-          ></span>
+                background-color:${param.color}">
+            </span>
           `;
 
           const tooltip = [

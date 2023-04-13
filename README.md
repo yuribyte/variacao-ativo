@@ -2,7 +2,6 @@
 
 ![sample-stock-app](https://user-images.githubusercontent.com/54062837/227601532-96598a19-4557-460e-aae7-73175502bb00.png)
 
-
 ## Apresentação
 
 Este desafio consiste em consultar a variação do preço de um ativo (PETR4.SA) e seus últimos 30 pregões.
@@ -24,30 +23,22 @@ Instale o Angular CLI globalmente:
 npm install -g @angular/cli
 ```
 
-Clone o repositório:
+Clone o repositório ou baixe o ZIP do projeto
 
 ```
 git clone https://github.com/yuribyte/variacao-ativo.git
 ```
 
-Ou baixe o ZIP do projeto.
-
 Acesse o diretório do projeto e instale as dependencias com o comando:
 
 ```
-npm install
+npm ci
 ```
 
 Inicie o projeto com o comando
 
 ```
-npm run start
-```
-
-Ou com o comando
-
-```
-ng serve
+npm start
 ```
 
 Acesse http://localhost:4200/
